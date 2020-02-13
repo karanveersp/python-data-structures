@@ -7,6 +7,9 @@ class Stack:
     def __init__(self):
         self.list = LinkedList()
 
+    def __len__(self):
+        return len(self.list)
+
     def push(self, data):
         node = Node(data)
         self.list.prepend(node)
@@ -15,7 +18,7 @@ class Stack:
         if self.is_empty():
             raise StopIteration("Attempting to pop from empty stack")
         data = self.list.head.data
-        self.list.remove_after(None)
+        self.list.remove_head()
         return data
 
     def peek(self):
@@ -24,14 +27,15 @@ class Stack:
     def is_empty(self):
         return self.list.head is None
 
-    def print(self):
-        self.list.print_list()
+    def __str__(self):
+        return str([data for _, data in self.list.traverse()])
 
 
 if __name__ == "__main__":
     st = Stack()
     st.push(5)
     st.push(10)
-    st.print()
+    print(st)
     print(st.pop(), "popped")
-    st.print()
+    print(len(st))
+    print(st)

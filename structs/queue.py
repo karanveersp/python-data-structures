@@ -7,6 +7,9 @@ class Queue:
     def __init__(self):
         self.list = LinkedList()
 
+    def __len__(self):
+        return len(self.list)
+
     def push(self, data):
         node = Node(data)
         self.list.append(node)  # if this was prepend, we'd have a stack
@@ -15,7 +18,7 @@ class Queue:
         if self.is_empty():
             raise StopIteration("Attempting to pop from empty queue")
         node = self.list.head.data
-        self.list.remove_after(None)
+        self.list.remove_head()
         return node
 
     def is_empty(self):
@@ -24,8 +27,8 @@ class Queue:
     def peek(self):
         return self.list.head.data
 
-    def print(self):
-        self.list.print_list()
+    def __str__(self):
+        return str([data for _, data in self.list.traverse()])
 
 
 if __name__ == "__main__":
@@ -35,4 +38,4 @@ if __name__ == "__main__":
     q.push(10)
     print(q.pop(), "popped")
     print(q.pop(), "popped")
-    q.print()
+    print(q)

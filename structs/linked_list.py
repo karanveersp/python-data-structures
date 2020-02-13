@@ -4,6 +4,97 @@ class Node:
         self.next = None
         self.prev = None
 
+    def __str__(self):
+        return str(self.data)
+
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+        self.tail = None
+        self._len = 0
+
+    def __len__(self):
+        return self._len
+
+    def append(self, new_node):
+        if self.head is None:
+            self.head = new_node
+            self.tail = new_node
+        else:
+            self.tail.next = new_node
+            self.tail = new_node
+        self._len += 1
+
+    def traverse(self):
+        node = self.head
+        while node:
+            yield node, node.data
+            node = node.next
+
+    def prepend(self, new_node):
+        if self.head is None:
+            self.head = new_node
+            self.tail = new_node
+        else:
+            new_node.next = self.head
+            self.head = new_node
+        self._len += 1
+
+    def insert_after(self, current_node, new_node):
+        if self.head is None:
+            self.head = new_node
+            self.tail = new_node
+        elif current_node is self.tail:
+            self.tail.next = new_node
+            self.tail = new_node
+        else:
+            new_node.next = current_node.next
+            current_node.next = new_node
+
+    def remove_head(self):
+        if self.head:
+            next_node = self.head.next
+            self.head = next_node
+            if next_node is None:
+                self.tail = None
+            self._len -= 1
+
+    def remove_tail(self):
+        for node, _ in self.traverse():
+            if node.next is self.tail:
+                node.next = None
+                self.tail = node
+                self._len -= 1
+
+    def remove_after(self, current_node):
+        if current_node.next:
+            node_after = current_node.next.next
+            current_node.next = node_after
+            if node_after is None:
+                # current is new tail
+                self.tail = current_node
+            self._len -= 1
+
+    def remove(self, data):
+        """Removes the node with the first matching data"""
+        for n, d in self.traverse():
+            if data == d and n is self.head:
+                self.remove_head()
+            if n.next.data == data:
+                self.remove_after(n)
+
+    def append_all(self, *args):
+        for node in args:
+            self.append(node)
+
+    def prepend_all(self, *args):
+        for node in args:
+            self.prepend(node)
+
+    def __str__(self):
+        return str([data for _, data in self.traverse()])
+
 
 class DoublyLinkedList:
     def __init__(self):
@@ -82,77 +173,16 @@ class DoublyLinkedList:
         if current_node is self.tail:
             self.tail = node_before
 
-    def print_list(self):
-        for _, data in self.traverse():
-            print(data)
-        print()
-
-
-class LinkedList:
-    def __init__(self):
-        self.head = None
-        self.tail = None
-
-    def append(self, new_node):
-        if self.head is None:
-            self.head = new_node
-            self.tail = new_node
-        else:
-            self.tail.next = new_node
-            self.tail = new_node
-
-    def traverse(self):
-        node = self.head
-        while node:
-            yield node, node.data
-            node = node.next
-
-    def prepend(self, new_node):
-        if self.head is None:
-            self.head = new_node
-            self.tail = new_node
-        else:
-            new_node.next = self.head
-            self.head = new_node
-
-    def insert_after(self, current_node, new_node):
-        if self.head is None:
-            self.head = new_node
-            self.tail = new_node
-        elif current_node is self.tail:
-            self.tail.next = new_node
-            self.tail = new_node
-        else:
-            new_node.next = current_node.next
-            current_node.next = new_node
-
-    def remove_after(self, current_node):
-        # special case - remove head
-        if current_node is None and self.head:
-            next_node = self.head.next
-            self.head = next_node
-            if next_node is None:
-                # we removed last item
-                self.tail = None
-        elif current_node.next:
-            node_after = current_node.next.next
-            current_node.next = node_after
-            if node_after is None:
-                # current is new tail
-                self.tail = current_node
-
-    def print_list(self):
-        for _, data in self.traverse():
-            print(data)
-        print()
+    def __str__(self):
+        return str([data for _, data in self.traverse()])
 
 
 if __name__ == "__main__":
-    word_list = DoublyLinkedList()
+    word_list = LinkedList()
     a = Node("Python")
     b = Node("Is")
     c = Node("Fun!")
 
-    [word_list.append(node) for node in (a, b, c)]
+    word_list.append_all(a, b, c)
 
-    word_list.print_list()
+    print(word_list)
